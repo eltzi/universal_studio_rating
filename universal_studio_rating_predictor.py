@@ -1,13 +1,11 @@
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from collections import Counter
 from itertools import chain
 import re
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem import SnowballStemmer, PorterStemmer
+from nltk.stem import PorterStemmer
 from wordcloud import WordCloud
 import string
 import os
@@ -15,15 +13,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import ComplementNB
 from imblearn.over_sampling import BorderlineSMOTE
-from sklearn.feature_selection import SelectPercentile, f_classif, chi2
-
+from sklearn.feature_selection import SelectPercentile, f_classif
 nltk.download('stopwords')
-cwd = os.getcwd()
-data_dir = "\\data\\universal_studio_branches.csv"
 
 
 def nltk_data_load(text_column_name):
-    df = pd.read_csv(cwd + data_dir)
+    df = pd.read_csv(os.getcwd() + "\\data\\universal_studio_branches.csv")
     df[text_column_name] = df['title'] + " " + df['review_text']
 
     percentage_review = (df.rating.value_counts() / len(df.rating)) * 100
@@ -36,7 +31,6 @@ def nltk_dataframe_string_column_process():
     dataframe = nltk_data_load("text")
 
     stemmer = PorterStemmer()
-    # stemmer = PorterStemmer('english')
     words = stopwords.words("english")
 
     # stemming & remove stopwords
@@ -144,7 +138,7 @@ if __name__ == "__main__":
     X_train_selected, X_test_selected= nltk_percentile_obeservations_select(X_train, X_test, y_train)
     nltk_model_build(X_train_selected, X_test_selected, y_train, y_test)
 
-    # oversampling & percentile selection - model score: 0.77 test score:0.54
+    # oversampling & percentile selection - model score: 0.78 test score:0.54
     X_train_selected_oversmpling, X_test_selected_oversmpling, y_train_oversmpling, y_test_oversmpling = \
         nltk_borderlinesmote_oversample(X_train_selected, X_test_selected, y_train, y_test)
     nltk_model_build(X_train_selected_oversmpling, X_test_selected, y_train_oversmpling, y_test)
